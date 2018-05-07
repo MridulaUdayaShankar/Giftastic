@@ -5,14 +5,16 @@ $(document).ready(function() {
     "laughing",
     "excited",
     "thumbsup",
-    "facepalm"
+    "facepalm",
+    "whatever"
   ];
-  // Function for dumping the JSON content for each button into the div
+  // Function for displaying gifs data
+
   function displayGifsInfo(topic) {
-    var queryURL =
-      "https://api.giphy.com/v1/gifs/search?q=" +
-      topic +
-      "&api_key=ODulMeCeHN13kEbiCRjMZTImlz61b3CY&q=reactions&limit=10&offset=0&rating=R&lang=en";
+    var queryURL = `https://api.giphy.com/v1/gifs/search?q=${topic}&api_key=ODulMeCeHN13kEbiCRjMZTImlz61b3CY&limit=10&offset=0&rating=R&lang=en`;
+    // "https://api.giphy.com/v1/gifs/search?q=" +
+    // topic +
+    // "&api_key=ODulMeCeHN13kEbiCRjMZTImlz61b3CY&limit=10&offset=0&rating=R&lang=en";
 
     $.ajax({
       url: queryURL,
@@ -24,7 +26,7 @@ $(document).ready(function() {
     });
   }
 
-  // Function for displaying gifs data
+  // Function for dumping the JSON content for each button into <button> tags
   function renderButtons() {
     $("#buttons-view").empty();
 
@@ -34,7 +36,7 @@ $(document).ready(function() {
       // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
       var newButton = $("<button>");
       // Adding a class of gifs to our button
-      newButton.addClass("gifs");
+      newButton.addClass("gifs btn btn-primary");
       // Adding a data-attribute
       newButton.attr("data-name", topics[i]);
       // Providing the initial button text
@@ -43,17 +45,26 @@ $(document).ready(function() {
       $("#buttons-view").append(newButton);
     }
   }
+  // Function for dumping the JSON content for each Gif into <img> tags
   function renderGifs(data) {
     $("#topics-view").empty();
+
     data.forEach(function(element) {
       var newGif = $("<img>")
-        .attr("src", element.images["480w_still"].url)
-        .addClass("gifContainer");
+        .attr({
+          src: element.images.fixed_height_small_still.url,
+          "data-still-src": element.images.fixed_height_small_still.url,
+          "data-animate-src": element.images.fixed_height_small.url,
+          "data-state": "still"
+        })
+        .addClass("gifContainer still");
+
       $("#topics-view").append(newGif);
     });
+    addClickHandlerForGifs();
   }
 
-  // 6.This function handles events where one button is clicked
+  // 6.This function handles events where 'create gif' button is clicked
   $("#add-giffy").on("click", function(event) {
     event.preventDefault();
 
@@ -62,36 +73,48 @@ $(document).ready(function() {
       .val()
       .trim();
 
-    // Adding the gifs from the textbox to our array
-    topics.push(gifs);
-    console.log(topics);
-
-    // Calling renderButtons which handles the processing of our gifs array
-    renderButtons();
+    // Adding the gifs from the textbox to array
+    if (gifs) {
+      topics.push(gifs);
+      console.log(topics);
+      renderButtons();
+    } else {
+      return;
+    }
   });
 
-  // Function for displaying the gifs info
-  // Using $(document).on instead of $(".gifs").on to add event listeners to dynamically generated elements
-
-  // $(document).on("click", ".gifs", displayGifsInfo());
+  // Calling renderButtons which handles the processing of gifs array
   renderButtons();
-  $(".gifs").click(function(event) {
+
+  $("#buttons-view").click(function(event) {
     var topic = $(event.target).attr("data-name");
     displayGifsInfo(topic);
   });
 
-  // Calling the renderButtons function to display the initial buttons
+  function addClickHandlerForGifs () {
 
-  // // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
-  // var state = $(this).attr("data-state");
-  // // If the clicked image's state is still, update its src attribute to what its data-animate value is.
-  // // Then, set the image's data-state to animate
-  // // Else set src to the data-still value
-  // if (state === "still") {
-  //   $(this).attr("src", $(this).attr("data-animate"));
-  //   $(this).attr("data-state", "animate");
-  // } else {
-  //   $(this).attr("src", $(this).attr("data-still"));
-  //   $(this).attr("data-state", "still");
-  // }
+    $(".gifContainer").click(function(event) {
+
+      $(".animated").attr('src', function (){
+        return $(this).attr("data-still-src");
+      });
+
+      var state = $(event.target).attr("data-state");
+      var targetGif = $(event.target);
+  
+      if (state === "still") {
+        targetGif.attr('src', targetGif.attr("data-animate-src")).removeClass('still').addClass('animated');
+      } else {
+        targetGif.attr('src', targetGif.attr("data-still-src")).removeClass('animated').addClass('still');
+      }
+    });
+  }
 });
+
+/*
+* TODOS 
+* 1. handle duplicate input (while adding buttons)
+* 2. Add pagenation (you need to increment the offset value in gify URL)
+* 3. Add a dynamic way to select number of results (create a select dropdown and hook it to the limit in URL, keep a default !!)
+* 4. Padding and cursor pointer for GIF images.
+*/
