@@ -6,7 +6,17 @@ $(document).ready(function() {
     "excited",
     "thumbsup",
     "facepalm",
-    "whatever"
+    "whatever",
+    "scream",
+    "love",
+    "sad",
+    "yes",
+    "applause",
+    "wow",
+    "angry",
+    "confused",
+    "thankyou",
+    "omg"
   ];
   // Function for displaying gifs data
 
@@ -36,7 +46,7 @@ $(document).ready(function() {
       // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
       var newButton = $("<button>");
       // Adding a class of gifs to our button
-      newButton.addClass("gifs btn btn-primary");
+      newButton.addClass("gifs btn");
       // Adding a data-attribute
       newButton.attr("data-name", topics[i]);
       // Providing the initial button text
@@ -60,8 +70,8 @@ $(document).ready(function() {
         .addClass("gifContainer still");
 
       $("#topics-view").append(newGif);
-    });
-    addClickHandlerForGifs();
+  });
+      addClickHandlerForGifs();
   }
 
   // 6.This function handles events where 'create gif' button is clicked
