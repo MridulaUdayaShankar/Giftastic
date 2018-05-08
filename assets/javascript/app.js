@@ -33,6 +33,7 @@ $(document).ready(function() {
       console.log("then!");
       console.log(response);
       renderGifs(response.data);
+      renderRating(response.data[index].rating);
     });
   }
 
@@ -73,6 +74,21 @@ $(document).ready(function() {
   });
       addClickHandlerForGifs();
   }
+  // function renderRating(){
+    
+  //   $("#topics-view").empty();
+  //   data.forEach(function(element) {
+  //     var rating = $("<span>")
+  //       .attr("data-rating")
+  //       .addClass("ratingContainer");
+
+  //     $("#topics-view").append(rating);
+  // });
+  //     addClickHandlerForGifs();
+  
+  // }
+
+
 
   // 6.This function handles events where 'create gif' button is clicked
   $("#add-giffy").on("click", function(event) {

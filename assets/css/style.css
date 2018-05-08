@@ -23,7 +23,6 @@ h1{
 .gifs {
     margin-right:10px;
     margin-bottom: 10px;
-    
 }
 .form-group {
 	font-size: 20px;
@@ -35,6 +34,9 @@ label {
 button {
 	animation: cubic-bezier();
 	font-family: 'Carter One', cursive;
-
+}
+.gifContainer{
+    border-radius: 30%;
+    padding: 20px;
 }
 
